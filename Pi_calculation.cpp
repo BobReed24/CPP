@@ -1,4 +1,5 @@
 // Command to compile: g++ Pi_calculation.cpp -o Pi_calculation -lmpfr -lgmp
+// Dependencies: libmpfr-dev and libgmp-dev
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -134,7 +135,7 @@ std::pair<double, double> get_system_usage() {
 // :param file_path: Path to the file where the result will be stored.
 // :param digits: Total number of digits to calculate. Use std::numeric_limits<double>::infinity() for infinite calculation.
 // :param chunk_size: Number of digits to calculate per step.
-void calculate_pi_to_file(const std::string& file_path, double digits, long long chunk_size = 100000) { // Default chunk size is 100,000
+void calculate_pi_to_file(const std::string& file_path, double digits, long long chunk_size = 1000000) { // Default chunk size is 100,000
 
     // mp.dps equivalent in MPFR is setting precision in bits.
     // Precision in bits = ceil(dps * log2(10))
@@ -221,14 +222,6 @@ void calculate_pi_to_file(const std::string& file_path, double digits, long long
             break; // Exit loop on error
         }
 
-        // Extract the required substring
-        // Python slice [total_written + 2 : total_written + 2 + remaining_digits]
-        // str(mp.pi) is like "3.14159..."
-        // Index 0: '3', Index 1: '.', Index 2: '1' (first digit after decimal)
-        // The slice starts at index total_written + 2. This corresponds to the total_written-th digit AFTER the decimal.
-        // mpfr_get_str gives "314159..." with exponent 1.
-        // The digits after the decimal start at index 1 of pi_str.
-        // We need remaining_digits characters starting from index total_written + 1.
         std::string pi_value_str(pi_str);
         std::string pi_chunk;
 
@@ -312,7 +305,8 @@ int main() {
     std::string output_file = "pi_digits.txt";
     // Total digits to print
     // Use std::numeric_limits<double>::infinity() for infinite calculation
-    double total_digits = std::numeric_limits<double>::infinity(); // Default is infinity
+    //double total_digits = std::numeric_limits<double>::infinity(); // Default is infinity
+    double total_digits = 10000000 + 1;
 
     calculate_pi_to_file(output_file, total_digits);
 
